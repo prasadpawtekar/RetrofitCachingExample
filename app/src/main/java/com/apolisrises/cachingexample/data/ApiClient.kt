@@ -7,6 +7,7 @@ import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -24,7 +25,7 @@ class ApiClient(val context: Context) {
     val retrofit by lazy {
 
 
-
+        val logInterceptor = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
         val onlineInterceptor = Interceptor { chain ->
             val response = chain.proceed(chain.request())
             val maxAge = 60 * 5
@@ -51,6 +52,7 @@ class ApiClient(val context: Context) {
         val client = OkHttpClient.Builder()
             .addInterceptor(offlineInterceptor)
             .addNetworkInterceptor(onlineInterceptor)
+            .addInterceptor(logInterceptor)
             .cache(cache)
             .build()
 

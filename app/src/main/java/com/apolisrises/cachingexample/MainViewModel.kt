@@ -20,6 +20,8 @@ class MainViewModel(val repository: IRepository): ViewModel() {
                 val response = repository.search(term)
                 if(response.isSuccessful) {
                     searchResult.postValue(response.body()?.results ?: emptyList())
+                } else if(response.code() == 504) {
+                    error.postValue("Not connected to internet.")
                 } else {
                     error.postValue("Unknown error. Please retry.")
                 }
